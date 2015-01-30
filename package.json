@@ -1,0 +1,11 @@
+{
+  "name": "vakiomax3",
+  "version": "0.0.0",
+  "description": "Vakiomax 3",
+  "main": "parselines.js",
+  "author": "Heikki Rauhala",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^3.0.1"
+  }
+}
