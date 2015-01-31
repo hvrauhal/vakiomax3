@@ -1,0 +1,12 @@
+{
+  "name": "VakioMax 3",
+  "description": "Submit Vakioveikkaus wagers by bulk",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": { "16": "soccer-ball-16.png", "128": "soccer-ball-128.png" }
+}
