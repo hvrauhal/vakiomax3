@@ -2,17 +2,18 @@
 var fs = require('fs'), _ = require('lodash')
 
 if(require.main === module) {
-  if (process.argv.length < 3) {
-    console.error('Provide filename as the argument!')
+  if (process.argv.length < 4) {
+    console.error('Usage ' + process.argv[1] + ' filename drawId')
     process.exit(1)
   }
   var filename = process.argv[2]
-  console.log(JSON.stringify(parseLines(filename), null, 2))
+  var drawId = process.argv[3]
+  console.log(JSON.stringify(parseLines(filename, drawId), null, 2))
 }
 
 exports.parseLines = parseLines
 
-function parseLines(fileName) {
+function parseLines(fileName, drawId) {
   var inFile = fs.readFileSync(fileName, 'utf8')
 
   var splitRows = _(inFile.split(/[\r\n]/))
@@ -29,7 +30,7 @@ function parseLines(fileName) {
   function selectionsToSportWagerRequestObj(selections) {
     return {
       "type": "NORMAL",
-      "drawId": "51580",
+      "drawId": drawId,
       "gameName": "SPORT",
       "selections": selections,
       "stake": 25
