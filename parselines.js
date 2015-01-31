@@ -8,15 +8,13 @@ if(require.main === module) {
   }
   var filename = process.argv[2]
   var drawId = process.argv[3]
-  console.log(JSON.stringify(parseLines(filename, drawId), null, 2))
+  console.log(JSON.stringify(parseLines(fs.readFileSync(filename, 'utf8'), drawId), null, 2))
 }
 
 exports.parseLines = parseLines
 
-function parseLines(fileName, drawId) {
-  var inFile = fs.readFileSync(fileName, 'utf8')
-
-  var splitRows = _(inFile.split(/[\r\n]/))
+function parseLines(rowsString, drawId) {
+  var splitRows = _(rowsString.split(/[\r\n]/))
   var allSportWagerRequestObjs = splitRows
     .filter(notEmpty)
     .map(cleanUpRowString)
