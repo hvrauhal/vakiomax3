@@ -1,19 +1,22 @@
-#!/usr/bin/env node
-var fs = require('fs'), _ = require('lodash')
+if (typeof module !== 'undefined' && module.exports) {
+  var fs = require('fs'), _ = require('lodash')
 
-if(require.main === module) {
-  if (process.argv.length < 4) {
-    console.error('Usage ' + process.argv[1] + ' filename drawId')
-    process.exit(1)
+  if (require.main === module) {
+    if (process.argv.length < 4) {
+      console.error('Usage ' + process.argv[1] + ' filename drawId')
+      process.exit(1)
+    }
+    var filename = process.argv[2]
+    var drawId = process.argv[3]
+    console.log(JSON.stringify(couponRowsToWagerRequests(fs.readFileSync(filename, 'utf8'), drawId, 25), null, 2))
   }
-  var filename = process.argv[2]
-  var drawId = process.argv[3]
-  console.log(JSON.stringify(couponRowsToWagerRequests(fs.readFileSync(filename, 'utf8'), drawId), null, 2))
+
+  exports.couponRowsToWagerRequests = couponRowsToWagerRequests
 }
-
-exports.couponRowsToWagerRequests = couponRowsToWagerRequests
-
-function couponRowsToWagerRequests(rowsString, drawId) {
+else {
+  window.couponRowsToWagerRequests = couponRowsToWagerRequests
+}
+function couponRowsToWagerRequests(rowsString, drawId, stake) {
   var splitRows = _(rowsString.split(/[\r\n]/))
   var allSportWagerRequestObjs = splitRows
     .filter(notEmpty)
@@ -31,7 +34,7 @@ function couponRowsToWagerRequests(rowsString, drawId) {
       "drawId": drawId,
       "gameName": "SPORT",
       "selections": selections,
-      "stake": 25
+      "stake": stake
     }
   }
 
