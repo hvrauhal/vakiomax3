@@ -1,8 +1,6 @@
 $(function () {
   moment.locale('fi-FI')
-  $('#rowsArea').hide()
-  $('#postRows').hide()
-  $('#gameIdSelect').hide()
+  $('#loggedIn').hide()
   $('#login').click(function () {
     var username = $('[name=username]').val()
     var password = $('[name=password]').val()
@@ -12,8 +10,8 @@ $(function () {
       password: password
     }, 'POST').done(function (r) {
       $('#loginForm').hide()
-      $('#rowsArea').show()
-      $('#loggedIn').empty().append($('<span>').text('Logged in ' + r.firstName + ' ' + r.lastName))
+      $('#loggedIn').show()
+      $('#banner').empty().append($('<span>').text('Logged in ' + r.firstName + ' ' + r.lastName))
       jsonAjax('GET', "https://www.veikkaus.fi/api/v1/sport-games/draws?game-names=SPORT")
         .done(function (r) {
           console.log('SPORT GAMES', r.draws)
@@ -25,8 +23,9 @@ $(function () {
     })
   })
   $('#postRows').click(function () {
-    var gameId = $('#gameIdSelect').val()
-    var basePrice = $('#gameIdSelect option[value="' + gameId + '"]').data('basePrice')
+    var $gameIdSelect = $('#gameIdSelect');
+    var gameId = $gameIdSelect.val()
+    var basePrice = $gameIdSelect.find('option[value="' + gameId + '"]').data('basePrice')
     console.log('GameID', gameId, 'BasePrice', basePrice)
     var coupons = couponRowsToWagerRequests($('#rowsArea').val(), gameId, basePrice)
     var couponsInGroupsOf25 = _(coupons).groupBy(function (v, i) {
@@ -37,23 +36,24 @@ $(function () {
     sendBatch()
 
     function sendBatch() {
+      var $results = $('#results')
       if (couponsInGroupsOf25.length == 0) {
-        $('body').append($('<div>').text('All sent'))
+        $results.append($('<div>').text('All sent'))
       } else {
         var thisBatch = couponsInGroupsOf25.shift()
-        $('body').append($('<div>').text('Checking...' + i++))
+        $results.append($('<div>').text('Checking...' + i++))
         jsonAjax('POST', 'https://www.veikkaus.fi/api/v1/sport-games/wagers/check', thisBatch)
-          .done(function(res) {
+          .done(function (res) {
             var errors = res.filter(function (row) {
               return row.error || (row.status === "REJECTED")
             })
-            if(errors.length > 0) {
-              $('body').append($('<div>').text('Rejected:' + JSON.stringify(errors)))
+            if (errors.length > 0) {
+              $results.append($('<div>').text('Rejected:' + JSON.stringify(errors)))
             }
             sendBatch()
           })
-          .fail(function(jqXHR, textStatus, errorThrown) {
-            $('body').append($('<div>').text('Errors: ' +  JSON.stringify({j: jqXHR.responseJSON, t: textStatus, e: errorThrown})))
+          .fail(function (jqXHR, textStatus, errorThrown) {
+            $results.append($('<div>').text('Errors: ' + JSON.stringify({j: jqXHR.responseJSON, t: textStatus, e: errorThrown})))
           })
       }
     }

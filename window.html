@@ -12,14 +12,20 @@
 </head>
 <body>
 <div id="loginForm">
-    <input name="username" type="text">
-    <input name="password" type="password">
-    <button id="login">LOGIN</button>
+    <h1>Login to veikkaus.fi</h1>
+    <label>Username: <input name="username" type="text" placeholder="username"></label>
+    <label>Password: <input name="password" type="password" placeholder="password"></label>
+    <button id="login">Login to Veikkaus</button>
 </div>
 <div id="loggedIn">
+    <div id="banner"></div>
+    <div style="float: right; width: 800px;" id="results"></div>
+    <div><label>Valitse peli<select id="gameIdSelect"></select></label></div>
+    <div><textarea id="rowsArea" rows="48" cols="13" placeholder="1x21x21x21x2         2x21x21x21x2"></textarea></div>
+    <div>
+        <button id="postRows">Tarkista rivit</button>
+        <button id="payRows">Maksa rivit</button>
+    </div>
 </div>
-<select id="gameIdSelect"></select>
-<textarea id="rowsArea" rows="48" cols="13"></textarea>
-<button id="postRows">Tarkista rivit</button>
 </body>
 </html>
