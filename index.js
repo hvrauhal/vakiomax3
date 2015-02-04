@@ -22,7 +22,13 @@ $(function () {
         })
     })
   })
-  $('#postRows').click(function () {
+  $('#checkRows').click(function () {
+    readAndSendRows('https://www.veikkaus.fi/api/v1/sport-games/wagers/check')
+  })
+  $('#payRows').click(function () {
+    readAndSendRows('https://www.veikkaus.fi/api/v1/sport-games/wagers')
+  })
+  function readAndSendRows(url) {
     var $gameIdSelect = $('#gameIdSelect');
     var gameId = $gameIdSelect.val()
     var basePrice = $gameIdSelect.find('option[value="' + gameId + '"]').data('basePrice')
@@ -32,32 +38,33 @@ $(function () {
       return Math.floor(i / 25)
     }).values().value()
     var i = 1;
-    console.log(couponsInGroupsOf25)
-    sendBatch()
+    sendBatch(url)
 
-    function sendBatch() {
+    function sendBatch(url) {
       var $results = $('#results')
       if (couponsInGroupsOf25.length == 0) {
         $results.append($('<div>').text('All sent'))
+        $('#payRows').prop('disabled', false)
       } else {
         var thisBatch = couponsInGroupsOf25.shift()
         $results.append($('<div>').text('Checking...' + i++))
-        jsonAjax('POST', 'https://www.veikkaus.fi/api/v1/sport-games/wagers/check', thisBatch)
+        jsonAjax('POST', url, thisBatch)
           .done(function (res) {
             var errors = res.filter(function (row) {
               return row.error || (row.status === "REJECTED")
             })
             if (errors.length > 0) {
               $results.append($('<div>').text('Rejected:' + JSON.stringify(errors)))
+            } else {
+              sendBatch(url)
             }
-            sendBatch()
           })
           .fail(function (jqXHR, textStatus, errorThrown) {
             $results.append($('<div>').text('Errors: ' + JSON.stringify({j: jqXHR.responseJSON, t: textStatus, e: errorThrown})))
           })
       }
     }
-  })
+  }
 
   function jsonAjax(type, url, data) {
     return $.ajax({
