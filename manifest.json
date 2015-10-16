@@ -1,7 +1,7 @@
 {
   "name": "VakioMax 3",
   "description": "Submit Vakioveikkaus wagers in bulk",
-  "version": "0.2",
+  "version": "0.3",
   "manifest_version": 2,
   "app": {
     "background": {

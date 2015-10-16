@@ -14,11 +14,14 @@ $(function () {
       $('#banner').empty().append($('<span>').text('Logged in ' + r.firstName + ' ' + r.lastName))
       jsonAjax('GET', "https://www.veikkaus.fi/api/v1/sport-games/draws?game-names=SPORT")
         .done(function (r) {
-          console.log('SPORT GAMES', r.draws)
+          var draws = r.draws;
+          console.log('SPORT GAMES all draws', draws)
+          var openDraws = draws.filter(function (draw) {
+            return draw.status === 'OPEN'
+          });
+          console.log('SPORT GAMES open draws', openDraws)
           $('#postRows').show()
-          $('#gameIdSelect').show().empty().append(r.draws.map(function (draw) {
-            return $('<option>').val(draw.id).data('basePrice', draw.gameRuleSet.basePrice).text(draw.name + ' (sulkeutuu ' + moment(draw.closeTime).format("l LT"))
-          }))
+          $('#gameIdSelect').show().empty().append(openDraws.map(drawToOption))
         })
     })
   })
@@ -28,6 +31,9 @@ $(function () {
   $('#payRows').click(function () {
     readAndSendRows('https://www.veikkaus.fi/api/v1/sport-games/wagers')
   })
+  function drawToOption(draw) {
+    return $('<option>').val(draw.id).data('basePrice', draw.gameRuleSet.basePrice).text(draw.name + ' (sulkeutuu ' + moment(draw.closeTime).format("l LT"))
+  }
   function readAndSendRows(url) {
     var $gameIdSelect = $('#gameIdSelect');
     var gameId = $gameIdSelect.val()
