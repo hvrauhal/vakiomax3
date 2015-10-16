@@ -1,7 +1,8 @@
 $(function () {
   moment.locale('fi-FI')
   $('#loggedIn').hide()
-  $('#login').click(function () {
+  $('#loginForm').submit(function (e) {
+    e.preventDefault()
     var username = $('[name=username]').val()
     var password = $('[name=password]').val()
     jsonAjax('POST', "https://www.veikkaus.fi/api/v1/sessions", {
