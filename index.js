@@ -5,7 +5,7 @@ $(function () {
     e.preventDefault()
     var username = $('[name=username]').val()
     var password = $('[name=password]').val()
-    jsonAjax('POST', "https://www.veikkaus.fi/api/v1/sessions", {
+    jsonAjax('POST', "https://www.veikkaus.fi/api/bff/v1/sessions", {
       type: "STANDARD_LOGIN",
       login: username,
       password: password
