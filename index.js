@@ -49,7 +49,7 @@ $(function () {
 
     function sendBatch(url) {
       var $results = $('#results')
-      if (couponsInGroupsOf25.length == 0) {
+      if (couponsInGroupsOf25.length === 0) {
         $results.append($('<div>').text('All sent'))
         $('#payRows').prop('disabled', false)
       } else {
